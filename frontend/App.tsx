@@ -5,8 +5,7 @@
  * @format
  */
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import React, { useMemo } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -17,6 +16,10 @@ import {
   View,
 } from 'react-native';
 
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import BackgroundService from "react-native-background-actions";
+
 import {
   Colors,
   DebugInstructions,
@@ -24,43 +27,22 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import MainPage from './Pages/MainPage';
+import Home from './Pages/Home';
+import { enableScreens } from 'react-native-screens';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+enableScreens();
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+const Stack = createNativeStackNavigator();
+
+
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const backgroundStyle = useMemo(() => {
+    return { backgroundColor: isDarkMode ? Colors.darker : Colors.lighter };
+  }, []);
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -68,6 +50,15 @@ function App(): React.JSX.Element {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
+
+      <NavigationContainer>
+        {/*Needs to be updated based on phone connected or not*/}
+        <Stack.Navigator initialRouteName={"InitialPage"}>
+          <Stack.Screen name="InitialPage" component={MainPage} />
+          <Stack.Screen name="Home" component={Home} />
+          
+        </Stack.Navigator> 
+      </NavigationContainer>
   
     </SafeAreaView>
   );
